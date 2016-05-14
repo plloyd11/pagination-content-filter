@@ -1,19 +1,39 @@
-// Since only 10 students should be shown at a time, your programming needs to
-// calculate the number of pages needed and add the appropriate number of
-// links to the bottom of the page.
-
-$(document).ready(function() {
+(function($) {
     var pagination = $('<div class="pagination"><ul></ul></div>');
     var studentsPerPage = 10;
     var studentsTotal = $('.student-item').length;
-    var pagesNeeded = Math.ceil(studentsTotal / studentsPerPage);
-    // Part 1: Pagination
-      // Hide full student list
-      $('.student-list').hide();
-      // Add pagination to the bottom of page
-      $('.page').append(pagination);
-      // Create list items
 
-      // Each page needs to show 10 students per page - perhaps a switch statement?
-      // Page 6 will show 51 - 55
-});
+    // Part 1: Pagination
+
+    // Create Pagination Nav Items
+    (function() {
+        $('.page').append(pagination);
+        var pagesNeeded = Math.ceil(studentsTotal / studentsPerPage);
+        for (var i = 0; i < pagesNeeded; i++) {
+            var navItems = '<li><a href=#> ' + (i + 1) + '</a></li>';
+            $('.pagination ul').append(navItems);
+        }
+        $('.student-list li').hide();
+    })();
+
+    var navBinder = function(array) {
+      // Add first 10 list items to an array and remove them from the available list
+      // Think about creating a callback function (navBinder) that can automatically bind arrays to bottom nav
+      // This function would be called in the click handler for the bottom nav
+   };
+
+    var studentsToShow = function() {
+        var currentPageList;
+        // cache student list items
+        var studentItems = document.getElementsByClassName('student-item');
+        // Array to store current students on page
+        var students = jQuery.makeArray(studentItems);
+
+        // forEach, if indexOf is less than 10, add to array that is bound to first list item
+
+    };
+
+
+    studentsToShow();
+
+})(jQuery);
