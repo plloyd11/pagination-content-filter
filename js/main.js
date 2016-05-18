@@ -1,39 +1,53 @@
 (function($) {
+    // Content to be added in dynamically (Progressive Enhancement)
     var pagination = $('<div class="pagination"><ul></ul></div>');
-    var studentsPerPage = 10;
-    var studentsTotal = $('.student-item').length;
+    var searchBox = $('<div class="student-search"><input placeholder="Search for students..."><button>Search</button></div>');
+    var students = $('.student-list li').toArray(); // Array of students
 
-    // Part 1: Pagination
-
-    // Create Pagination Nav Items
+    // Create Pagination Nav Items & Search Box so they are loaded initially
     (function() {
+        var studentsPerPage = 10;
+        var pagesNeeded = Math.ceil($('.student-item').length / studentsPerPage);
         $('.page').append(pagination);
-        var pagesNeeded = Math.ceil(studentsTotal / studentsPerPage);
+        $('.page-header').append(searchBox);
         for (var i = 0; i < pagesNeeded; i++) {
             var navItems = '<li><a href=#> ' + (i + 1) + '</a></li>';
             $('.pagination ul').append(navItems);
         }
-        $('.student-list li').hide();
-    })();
+        // Hide all students in the array except for the initial 10
+        $(students).hide().slice(0,10).show();
+        // Add active class to first link in pagination
+        $('.pagination').find('a').first().addClass('active');
+    }());
 
-    var navBinder = function(array) {
-      // Add first 10 list items to an array and remove them from the available list
-      // Think about creating a callback function (navBinder) that can automatically bind arrays to bottom nav
-      // This function would be called in the click handler for the bottom nav
-   };
+    // Determine which list items to load
+    function itemsOnPage(mainArray, emptyArray, start, end) {
+        emptyArray = mainArray.slice(start, end);
+        $(mainArray).hide();
+        $(emptyArray).show();
+    }
 
-    var studentsToShow = function() {
-        var currentPageList;
-        // cache student list items
-        var studentItems = document.getElementsByClassName('student-item');
-        // Array to store current students on page
-        var students = jQuery.makeArray(studentItems);
+    // Add active class to pagination nav item
+    function pagClick(active) {
+        $('.pagination').find('a').removeClass('active');
+        $(active).addClass('active');
+    }
 
-        // forEach, if indexOf is less than 10, add to array that is bound to first list item
+    // Bind 'active' class to click event handler
+    pagination.on('click', 'a', function(e) {
+        e.preventDefault();
+        var clicked = e.target;
+        var filter = $(clicked).html();
+        var studentsPerPage = 10;
+        var startSlice = (filter * studentsPerPage) - studentsPerPage;
+        var endSlice = startSlice + studentsPerPage;
+        var currentPage = [];
 
-    };
+        pagClick(clicked);
+        itemsOnPage(students, currentPage, startSlice, endSlice);
 
+    });
 
-    studentsToShow();
+    // Search function - use .grep()
 
 })(jQuery);
