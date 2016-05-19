@@ -48,6 +48,43 @@
 
     });
 
-    // Search function - use .grep()
+    // Search IIFE
+
+    (function() {
+      var names = $('.student-item');
+      var search = $('.student-search').find('input');
+      var tempStudent = [];
+
+      // Loop through each students details & store container element, email address & name
+      names.each(function() {
+         tempStudent.push({
+            element: this,
+            email: $(this).find('span').html().trim(),
+            text: $(this).find('h3').html().trim()
+         });
+      });
+
+      console.log(tempStudent);
+
+      function filter() {
+         var query = this.value.trim().toLowerCase();    // Store the search results
+
+         tempStudent.forEach(function(name) {
+            var index = 0;
+            if (query) {
+               index = name.text.indexOf(query);
+               // Gotta add email to the if statement
+            }
+            name.element.style.display = index === -1 ? 'none' : '';
+         });
+      }
+
+      if ('oninput' in search[0]) {
+         search.on('input', filter);
+      } else {
+         search.on('keyup', filter);
+      }
+
+   }());
 
 })(jQuery);
