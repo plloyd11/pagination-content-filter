@@ -21,10 +21,10 @@
     }());
 
     // Determine which list items to load
-    function itemsOnPage(mainArray, emptyArray, start, end) {
-        emptyArray = mainArray.slice(start, end);
+    function itemsOnPage(mainArray, currentArray, start, end) {
+        currentArray = mainArray.slice(start, end);
         $(mainArray).hide();
-        $(emptyArray).show();
+        $(currentArray).show();
     }
 
     // Add active class to pagination nav item
@@ -76,6 +76,7 @@
                 var index = 0;
                 if (query) {
                     index = name.text.indexOf(query);
+                    index = name.email.indexOf(query);
                 }
                 name.element.style.display = index === -1 ? 'none' : '';
             });
