@@ -41,8 +41,11 @@
         // store number that corresponds to pagination nav item
         var filter = $(clicked).html();
         var studentsPerPage = 10;
+        // Take number of pagination item clicked on and use that to start filter
         var startSlice = (filter * studentsPerPage) - studentsPerPage;
+        // Take number of pagination item and add number of students per page
         var endSlice = startSlice + studentsPerPage;
+        // Show these 10 students on the page
         var currentPage = [];
 
         pagClick(clicked);
@@ -50,9 +53,9 @@
 
     });
 
-    // Search IIFE
+    // Search
 
-    (function() {
+    function searchPage() {
         var names = $('.student-item');
         var search = $('.student-search').find('input');
         var tempStudent = [];
@@ -68,29 +71,38 @@
 
         // Filter through all the items in the tempStudent Array
         function filter() {
-            // Store the search results
+            // Store the search results in real time
             var query = this.value.trim().toLowerCase();
 
             // For all the student items
             tempStudent.forEach(function(name) {
                 var index = 0;
+                // If any character is typed into input field
                 if (query) {
+                    // Find the value of that character and give it to the index variable
                     index = name.text.indexOf(query);
                     index = name.email.indexOf(query);
                 }
-                name.element.style.display = index === -1 ? 'none' : '';
+                // Hide all items that do not have matching characters
+                if (index === -1) {
+                    $(name.element).hide().addClass('hide-results');
+                    // Need to display message stating no results were found
+                } else {
+                    // If the element contains a character typed into search field, show it
+                    $(name.element).show();
+                }
             });
             if (query.length === 0) {
                 $(students).hide().slice(0, 10).show();
             }
         }
-
         if ('oninput' in search[0]) {
             search.on('input', filter);
         } else {
             search.on('keyup', filter);
         }
+    }
 
-    }());
+    searchPage();
 
 })(jQuery);
