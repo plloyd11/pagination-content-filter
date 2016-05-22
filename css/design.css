@@ -104,25 +104,21 @@ body {
     color: #fff;
 }
 .search-warning {
-    display: block;
+    display: flex;
+    justify-content: flex-end;
     margin: 1em auto;
-    padding-top: .5em;
-    padding-bottom: .5em;
-    width: 350px;
-    position: relative;
-    text-align: center;
+    padding-top: .75em;
+    padding-bottom: .75em;
+    width: 400px;
     line-height: 1.5;
     color: white;
     background-color: hsl(33, 89%, 65%);
     border: 1px solid #CB904D;
     border-radius: 6px;
 }
-.search-warning p::before {
-    content: '';
-    background: url('../img/warning.svg');
-    background-repeat: no-repeat;
-    width: 48px;
-    height: 48px;
-    position: absolute;
-    left: 15px;
+.search-warning img {
+    flex: 1 50px;
+}
+.search-warning p {
+    flex: 1 230px;
 }

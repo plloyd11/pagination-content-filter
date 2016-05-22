@@ -108,7 +108,7 @@
             // IIFE for appending warning message if no results are found
             (function() {
                 var hiding = $('.hide-results').length;
-                var keepSearching = $('<div class="search-warning"><p>No matches found for ' + query + '.' + '<br>' + ' Please try another query.</p></div>');
+                var keepSearching = $('<div class="search-warning"><img src="img/warning.svg"><p>No matches found for ' + query + '.' + '<br>' + ' Please try another query.</p></div>');
                 if (hiding === tempStudent.length) {
                     $(pagination).hide();
                     $('.page').append(keepSearching);
