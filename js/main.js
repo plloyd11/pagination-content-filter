@@ -4,8 +4,10 @@
     var searchBox = $('<div class="student-search"><input placeholder="Search for students..."><button>Search</button></div>');
     var students = $('.student-list li').toArray(); // Array of students
 
+    // Part 1: Pagination
+
     // Create Pagination Nav Items & Search Box so they are loaded initially
-    (function() {
+    function determinePages() {
         var studentsPerPage = 10;
         var pagesNeeded = Math.ceil($(students).length / studentsPerPage);
         $('.page').append(pagination);
@@ -18,13 +20,14 @@
         $(students).hide().slice(0, 10).show();
         // Add active class to first link in pagination
         $('.pagination').find('a').first().addClass('active');
-    }());
+    }
+    determinePages();
 
     // Determine which list items to load
     function itemsOnPage(mainArray, currentArray, start, end) {
         currentArray = mainArray.slice(start, end);
         $(mainArray).hide();
-        $(currentArray).show();
+        $(currentArray).fadeIn(500, 'swing');
     }
 
     // Add active class to pagination nav item
@@ -53,7 +56,7 @@
 
     });
 
-    // Search
+    // Part 2: Search
 
     function searchPage() {
         var names = $('.student-item');
@@ -68,11 +71,11 @@
                 text: $(this).find('h3').html().trim()
             });
         });
-
         // Filter through all the items in the tempStudent Array
         function filter() {
             // Store the search results in real time
             var query = this.value.trim().toLowerCase();
+            var searchPag = [];
 
             // For all the student items
             tempStudent.forEach(function(name) {
@@ -85,24 +88,42 @@
                 }
                 // Hide all items that do not have matching characters
                 if (index === -1) {
-                    $(name.element).hide().addClass('hide-results');
-                    // Need to display message stating no results were found
+                    $(name.element).fadeOut(200).addClass('hide-results');
                 } else {
                     // If the element contains a character typed into search field, show it
-                    $(name.element).show();
+                    $(name.element).fadeIn(200).removeClass('hide-results');
                 }
+                // If the element does NOT have the class 'hide-results'
+                if (!$(name.element).hasClass('hide-results')) {
+                    searchPag.push(name.element);
+                    console.log(searchPag.length);
+                }
+                // If the seach input is empty, show the first 10 results by default and reset active class
+               if (query.length === 0) {
+                   $(students).hide().slice(0, 10).show();
+                   $('.pagination').find('a').removeClass('active');
+                   $('.pagination').find('a').first().addClass('active');
+               }
             });
-            if (query.length === 0) {
-                $(students).hide().slice(0, 10).show();
-            }
-        }
+            // IIFE for appending warning message if no results are found
+            (function() {
+                var hiding = $('.hide-results').length;
+                var keepSearching = $('<div class="search-warning"><p>No matches found for ' + query + '.' + '<br>' + ' Please try another query.</p></div>');
+                if (hiding === tempStudent.length) {
+                    $(pagination).hide();
+                    $('.page').append(keepSearching);
+                } else if (hiding < tempStudent.length) {
+                    $('.search-warning').hide();
+                    $(pagination).fadeIn();
+                }
+            }());
+        } // End filter function
+
         if ('oninput' in search[0]) {
             search.on('input', filter);
         } else {
             search.on('keyup', filter);
         }
     }
-
     searchPage();
-
 })(jQuery);

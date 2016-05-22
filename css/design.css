@@ -103,3 +103,26 @@ body {
     background-color: #4ba6c3;
     color: #fff;
 }
+.search-warning {
+    display: block;
+    margin: 1em auto;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    width: 350px;
+    position: relative;
+    text-align: center;
+    line-height: 1.5;
+    color: white;
+    background-color: hsl(33, 89%, 65%);
+    border: 1px solid #CB904D;
+    border-radius: 6px;
+}
+.search-warning p::before {
+    content: '';
+    background: url('../img/warning.svg');
+    background-repeat: no-repeat;
+    width: 48px;
+    height: 48px;
+    position: absolute;
+    left: 15px;
+}
