@@ -123,7 +123,7 @@
                     $('.pagination').find('a').removeClass('active');
                     $('.pagination').find('a').first().addClass('active');
                     $('.student-search').on('blur', 'input', function() {
-                        console.log("Butts");
+                       // Finish this
                     });
                 }
             });
