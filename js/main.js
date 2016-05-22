@@ -6,22 +6,26 @@
 
     // Part 1: Pagination
 
-    // Create Pagination Nav Items & Search Box so they are loaded initially
-    function determinePages() {
-        var studentsPerPage = 10;
-        var pagesNeeded = Math.ceil($(students).length / studentsPerPage);
+    // Immediately add dyanmically generated content
+    (function() {
         $('.page').append(pagination);
         $('.page-header').append(searchBox);
+        // Hide all students in the array except for the initial 10
+        $(students).hide().slice(0, 10).show();
+    }());
+
+    // Function to create proper number of pages based on total number of students
+    function determinePages(array) {
+        var studentsPerPage = 10;
+        var pagesNeeded = Math.ceil($(array).length / studentsPerPage);
         for (var i = 0; i < pagesNeeded; i++) {
             var navItems = '<li><a href=#> ' + (i + 1) + '</a></li>';
             $('.pagination ul').append(navItems);
         }
-        // Hide all students in the array except for the initial 10
-        $(students).hide().slice(0, 10).show();
         // Add active class to first link in pagination
         $('.pagination').find('a').first().addClass('active');
     }
-    determinePages();
+    determinePages(students);
 
     // Determine which list items to load
     function itemsOnPage(mainArray, currentArray, start, end) {
@@ -96,14 +100,17 @@
                 // If the element does NOT have the class 'hide-results'
                 if (!$(name.element).hasClass('hide-results')) {
                     searchPag.push(name.element);
-                    console.log(searchPag.length);
+                    if (searchPag) {
+                        $(pagination).find('a').hide();
+                        determinePages(searchPag);
+                    }
                 }
                 // If the seach input is empty, show the first 10 results by default and reset active class
-               if (query.length === 0) {
-                   $(students).hide().slice(0, 10).show();
-                   $('.pagination').find('a').removeClass('active');
-                   $('.pagination').find('a').first().addClass('active');
-               }
+                if (query.length === 0) {
+                    $(students).hide().slice(0, 10).show();
+                    $('.pagination').find('a').removeClass('active');
+                    $('.pagination').find('a').first().addClass('active');
+                }
             });
             // IIFE for appending warning message if no results are found
             (function() {
