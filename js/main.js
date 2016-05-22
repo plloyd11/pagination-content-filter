@@ -41,24 +41,28 @@
     }
 
     // Bind 'active' class to click event handler
-    pagination.on('click', 'a', function(e) {
-        e.preventDefault();
-        // store reference of user click
-        var clicked = e.target;
-        // store number that corresponds to pagination nav item
-        var filter = $(clicked).html();
-        var studentsPerPage = 10;
-        // Take number of pagination item clicked on and use that to start filter
-        var startSlice = (filter * studentsPerPage) - studentsPerPage;
-        // Take number of pagination item and add number of students per page
-        var endSlice = startSlice + studentsPerPage;
-        // Show these 10 students on the page
-        var currentPage = [];
+    function clickNav(array) {
+        pagination.on('click', 'a', function(e) {
+            e.preventDefault();
+            // store reference of user click
+            var clicked = e.target;
+            // store number that corresponds to pagination nav item
+            var filter = $(clicked).html();
+            var studentsPerPage = 10;
+            // Take number of pagination item clicked on and use that to start filter
+            var startSlice = (filter * studentsPerPage) - studentsPerPage;
+            // Take number of pagination item and add number of students per page
+            var endSlice = startSlice + studentsPerPage;
+            // Show these 10 students on the page
+            var currentPage = [];
 
-        pagClick(clicked);
-        itemsOnPage(students, currentPage, startSlice, endSlice);
+            pagClick(clicked);
 
-    });
+            itemsOnPage(array, currentPage, startSlice, endSlice);
+        });
+    }
+
+    clickNav(students);
 
     // Part 2: Search
 
@@ -99,17 +103,28 @@
                 }
                 // If the element does NOT have the class 'hide-results'
                 if (!$(name.element).hasClass('hide-results')) {
+                    var currentArray = [];
                     searchPag.push(name.element);
                     if (searchPag) {
-                        $(pagination).find('a').hide();
+                        $('.student-list').find('li').filter('.hide-results').hide();
+                        // Remove list elements from DOM that need to be hidden
+                        $(pagination).find('a').addClass('remove-me');
+                        $(pagination).find('a').attr('class', 'remove-me').parent().remove();
                         determinePages(searchPag);
+                        itemsOnPage(searchPag, currentArray, 0, 10);
+                        clickNav(searchPag);
+                        // Remove list items that are part of original click search and show filtered search results
                     }
                 }
-                // If the seach input is empty, show the first 10 results by default and reset active class
+
+                // If the search input is empty, show the first 10 results by default and reset active class
                 if (query.length === 0) {
                     $(students).hide().slice(0, 10).show();
                     $('.pagination').find('a').removeClass('active');
                     $('.pagination').find('a').first().addClass('active');
+                    $('.student-search').on('blur', 'input', function() {
+                        console.log("Butts");
+                    });
                 }
             });
             // IIFE for appending warning message if no results are found

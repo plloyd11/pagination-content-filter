@@ -122,3 +122,7 @@ body {
 .search-warning p {
     flex: 1 230px;
 }
+
+.hide-results {
+   display: none !important;
+}
