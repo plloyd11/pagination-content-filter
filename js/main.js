@@ -1,8 +1,9 @@
 (function($) {
     // Content to be added in dynamically (Progressive Enhancement)
     var pagination = $('<div class="pagination"><ul></ul></div>');
-    var searchBox = $('<div class="student-search"><input placeholder="Search for students..."><button>Search</button></div>');
+    var searchBox = $('<div class="student-search"><input placeholder="Search for students..."><button>Restart Search</button></div>');
     var students = $('.student-list li').toArray(); // Array of students
+    var currentPage = [];
 
     // Part 1: Pagination
 
@@ -16,8 +17,10 @@
 
     // Function to create proper number of pages based on total number of students
     function determinePages(array) {
+        $(".pagination ul li").remove();
+        var arrayLength = array.length;
         var studentsPerPage = 10;
-        var pagesNeeded = Math.ceil($(array).length / studentsPerPage);
+        var pagesNeeded = Math.ceil(arrayLength / studentsPerPage);
         for (var i = 0; i < pagesNeeded; i++) {
             var navItems = '<li><a href=#> ' + (i + 1) + '</a></li>';
             $('.pagination ul').append(navItems);
@@ -41,7 +44,7 @@
     }
 
     // Bind 'active' class to click event handler
-    function clickNav(array) {
+    function clickNav(array, newArray) {
         pagination.on('click', 'a', function(e) {
             e.preventDefault();
             // store reference of user click
@@ -53,40 +56,38 @@
             var startSlice = (filter * studentsPerPage) - studentsPerPage;
             // Take number of pagination item and add number of students per page
             var endSlice = startSlice + studentsPerPage;
-            // Show these 10 students on the page
-            var currentPage = [];
-
+            // Add active class to the page clicked
             pagClick(clicked);
-
-            itemsOnPage(array, currentPage, startSlice, endSlice);
+            // Display current page items
+            itemsOnPage(array, newArray, startSlice, endSlice);
         });
     }
 
-    clickNav(students);
+    clickNav(students, currentPage);
 
     // Part 2: Search
 
     function searchPage() {
         var names = $('.student-item');
         var search = $('.student-search').find('input');
-        var tempStudent = [];
+        students = [];
 
         // Loop through each students details & store container element, email address & name
         names.each(function() {
-            tempStudent.push({
+            students.push({
                 element: this,
                 email: $(this).find('span').html().trim(),
                 text: $(this).find('h3').html().trim()
             });
         });
-        // Filter through all the items in the tempStudent Array
+        // Filter through all the items in the new students array
         function filter() {
             // Store the search results in real time
             var query = this.value.trim().toLowerCase();
             var searchPag = [];
 
             // For all the student items
-            tempStudent.forEach(function(name) {
+            students.forEach(function(name) {
                 var index = 0;
                 // If any character is typed into input field
                 if (query) {
@@ -103,17 +104,17 @@
                 }
                 // If the element does NOT have the class 'hide-results'
                 if (!$(name.element).hasClass('hide-results')) {
-                    var currentArray = [];
+
                     searchPag.push(name.element);
                     if (searchPag) {
+                        $(searchPag).hide().slice(0, 10).show();
                         $('.student-list').find('li').filter('.hide-results').hide();
                         // Remove list elements from DOM that need to be hidden
                         $(pagination).find('a').addClass('remove-me');
                         $(pagination).find('a').attr('class', 'remove-me').parent().remove();
                         determinePages(searchPag);
-                        itemsOnPage(searchPag, currentArray, 0, 10);
-                        clickNav(searchPag);
-                        // Remove list items that are part of original click search and show filtered search results
+                        // Need to figure out a way to paginate live search results to 10 per page
+                        clickNav(searchPag, students);
                     }
                 }
 
@@ -122,21 +123,20 @@
                     $(students).hide().slice(0, 10).show();
                     $('.pagination').find('a').removeClass('active');
                     $('.pagination').find('a').first().addClass('active');
-                    $('.student-search').on('blur', 'input', function() {
-                       // Finish this
-                    });
                 }
             });
             // IIFE for appending warning message if no results are found
             (function() {
                 var hiding = $('.hide-results').length;
-                var keepSearching = $('<div class="search-warning"><img src="img/warning.svg"><p>No matches found for ' + query + '.' + '<br>' + ' Please try another query.</p></div>');
-                if (hiding === tempStudent.length) {
+                var keepSearching = $('<div class="search-warning"><img src="img/warning.svg"><p>No matches found for ' + query + '.' + '<br>' + ' Please restart your search.</p></div>');
+                if (hiding === students.length) {
                     $(pagination).hide();
-                    $('.page').append(keepSearching);
-                } else if (hiding < tempStudent.length) {
-                    $('.search-warning').hide();
-                    $(pagination).fadeIn();
+                    $('.student-list').html(keepSearching);
+                    (function() {
+                        $('.student-search').on('click', 'button', function() {
+                            location.reload();
+                        });
+                    }());
                 }
             }());
         } // End filter function
