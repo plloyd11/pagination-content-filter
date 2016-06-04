@@ -123,6 +123,7 @@
                     $(students).hide().slice(0, 10).show();
                     $('.pagination').find('a').removeClass('active');
                     $('.pagination').find('a').first().addClass('active');
+                    location.reload();
                 }
             });
             // IIFE for appending warning message if no results are found
