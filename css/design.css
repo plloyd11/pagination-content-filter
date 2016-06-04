@@ -126,3 +126,7 @@ body {
 .hide-results {
    display: none !important;
 }
+
+.show-results {
+   display: list-item !important;
+}
