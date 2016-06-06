@@ -5,6 +5,11 @@
     var students = $('.student-list li').toArray(); // Array of students
     var currentPage = [];
 
+    // Give focus to search input field automatically
+    window.onload = function() {
+        $('.student-search input').focus();
+    }
+
     // Part 1: Pagination
 
     // Immediately add dyanmically generated content
@@ -104,20 +109,21 @@
                 }
                 // If the element does NOT have the class 'hide-results'
                 if (!$(name.element).hasClass('hide-results')) {
-
+                    // Push results to searchPag array
                     searchPag.push(name.element);
+                    // If query is typed into search...
                     if (searchPag) {
                         $(searchPag).hide().slice(0, 10).show();
                         $('.student-list').find('li').filter('.hide-results').hide();
                         // Remove list elements from DOM that need to be hidden
                         $(pagination).find('a').addClass('remove-me');
                         $(pagination).find('a').attr('class', 'remove-me').parent().remove();
+                        // Determine pages needed
                         determinePages(searchPag);
-                        // Need to figure out a way to paginate live search results to 10 per page
+                        // Determinte what students to load on subsequent pages
                         clickNav(searchPag, students);
                     }
                 }
-
                 // If the search input is empty, show the first 10 results by default and reset active class
                 if (query.length === 0) {
                     $(students).hide().slice(0, 10).show();
@@ -140,8 +146,11 @@
                     }());
                 }
             }());
+            // Hide pagination if only one page
+            if ($('.pagination ul li').length === 1) {
+                $('.pagination').hide();
+            }
         } // End filter function
-
         if ('oninput' in search[0]) {
             search.on('input', filter);
         } else {
